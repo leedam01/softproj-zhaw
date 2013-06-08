@@ -2,10 +2,8 @@ package view;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
 import javax.swing.ButtonGroup;
@@ -22,22 +20,22 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
 
 import sender.Message;
 
+import com.toedter.calendar.JDateChooser;
+
 public class GUI extends JFrame {
-	private JMenuBar menubar;
-	private JMenu menu;
-	private JMenuItem save, load, close;
-	private JPanel p1, p2, p3;
+	private JPanel p2, p3;
 	private JRadioButton radioEmail, radioSms, radioMms, radioPrinter;
-	private JLabel l1, l2, l3, l4, l5, l6, l7, l8, l9;
-	private JTextField text1, text2, text3, text4, text5, text6, text7;
+	private JLabel l1, l2, l3, l4, l5, l6, l7, l8, l9, l10, l11;
+	private JTextField text1, text2, text3, text4, text5, text6, text7, text8;
 	private JTextArea area1;
 	private JButton b1, b2, b3, b4, b5, b6;
-	private GroupLayout.SequentialGroup hGroup, vGroup;
 	private GroupLayout layout;
+	private JCheckBox checkRemainder;
+
+	private JDateChooser date;
 
 	public GUI(Message m) {
 
@@ -47,7 +45,7 @@ public class GUI extends JFrame {
 	public void createGuiV2(Message m) {
 
 		getContentPane().setLayout(new BorderLayout());
-		
+
 		JComponent panel = new JPanel();
 
 		layout = new GroupLayout(panel);
@@ -71,7 +69,7 @@ public class GUI extends JFrame {
 		l1 = new JLabel("Messagetype:");
 
 		// Create the radio buttons.
-		
+
 		radioEmail = new JRadioButton("Email");
 		radioSms = new JRadioButton("SMS");
 		radioMms = new JRadioButton("MMS");
@@ -82,7 +80,7 @@ public class GUI extends JFrame {
 		group.add(radioSms);
 		group.add(radioMms);
 		group.add(radioPrinter);
-		
+
 		radioEmail.setSelected(true);
 
 		p2.setLayout(new FlowLayout());
@@ -91,9 +89,8 @@ public class GUI extends JFrame {
 		p2.add(radioSms);
 		p2.add(radioMms);
 		p2.add(radioPrinter);
-		
 
-		getContentPane().add(p2,BorderLayout.NORTH);
+		getContentPane().add(p2, BorderLayout.NORTH);
 
 		createAllFields();
 		setEmailForm();
@@ -115,6 +112,8 @@ public class GUI extends JFrame {
 		l7 = new JLabel("Attachement");
 		l8 = new JLabel("Bild");
 		l9 = new JLabel("Printer Name");
+		l10 = new JLabel("Zeit");
+		l11 = new JLabel("Datum");
 		text1 = new JTextField();
 		text2 = new JTextField();
 		text3 = new JTextField();
@@ -122,206 +121,293 @@ public class GUI extends JFrame {
 		text5 = new JTextField();
 		text6 = new JTextField();
 		text7 = new JTextField();
-		
+		text8 = new JTextField(10);
+
 		b1 = new JButton("Adressbuch");
 		b2 = new JButton("Adressbuch");
 		b3 = new JButton("Datei");
 		b4 = new JButton("Datei");
 		b5 = new JButton("Senden");
 		b6 = new JButton("Löschen");
-		
+
 		p3 = new JPanel();
 		p3.add(b5);
 		p3.add(b6);
 
-		area1 = new JTextArea(10,10);
+		area1 = new JTextArea(10, 10);
+
+		date = new JDateChooser();
+
+		checkRemainder = new JCheckBox("Senden zu einem späteren Zeitpunkt");
 
 		layout.setHorizontalGroup(layout
 				.createSequentialGroup()
 				.addGroup(
-						layout.createParallelGroup(
-								GroupLayout.Alignment.CENTER).addComponent(l2)
-								.addComponent(l3).addComponent(l4)
-								.addComponent(l5).addComponent(l9).addComponent(l6).addComponent(l7).addComponent(l8))
+						layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+								.addComponent(l2).addComponent(l3)
+								.addComponent(l4).addComponent(l5)
+								.addComponent(l9).addComponent(l6)
+								.addComponent(l7).addComponent(l8).addComponent(l10).addComponent(l11))
 				.addGroup(
-						layout.createParallelGroup(
-								GroupLayout.Alignment.CENTER)
-								.addComponent(text1).addComponent(text2).addComponent(text3)
-								.addComponent(text4).addComponent(text7).addComponent(area1)
-								.addComponent(text5).addComponent(text6).addComponent(p3))
+						layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+								.addComponent(text1).addComponent(text2)
+								.addComponent(text3).addComponent(text4)
+								.addComponent(text7).addComponent(area1)
+								.addComponent(text5).addComponent(text6)
+								.addComponent(checkRemainder).addComponent(text8)
+								.addComponent(date).addComponent(p3))
 				.addGroup(
-						layout.createParallelGroup(
-								GroupLayout.Alignment.CENTER).addComponent(b1)
-								.addComponent(b2).addComponent(b3).addComponent(b4)));
+						layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+								.addComponent(b1).addComponent(b2)
+								.addComponent(b3).addComponent(b4)));
 
 		layout.setVerticalGroup(layout
 				.createSequentialGroup()
 				.addGroup(
 						layout.createParallelGroup(
-								GroupLayout.Alignment.BASELINE).addComponent(l2)
-								.addComponent(text1).addComponent(b1))
+								GroupLayout.Alignment.BASELINE)
+								.addComponent(l2).addComponent(text1)
+								.addComponent(b1))
 				.addGroup(
 						layout.createParallelGroup(
-								GroupLayout.Alignment.BASELINE).addComponent(l3)
-								.addComponent(text2).addComponent(b2))
+								GroupLayout.Alignment.BASELINE)
+								.addComponent(l3).addComponent(text2)
+								.addComponent(b2))
 				.addGroup(
 						layout.createParallelGroup(
-								GroupLayout.Alignment.BASELINE).addComponent(l4)
-								.addComponent(text3))
+								GroupLayout.Alignment.BASELINE)
+								.addComponent(l4).addComponent(text3))
 				.addGroup(
 						layout.createParallelGroup(
-								GroupLayout.Alignment.BASELINE).addComponent(l5)
-								.addComponent(text4))
+								GroupLayout.Alignment.BASELINE)
+								.addComponent(l5).addComponent(text4))
 				.addGroup(
 						layout.createParallelGroup(
-								GroupLayout.Alignment.BASELINE).addComponent(l9)
-								.addComponent(text7))				
+								GroupLayout.Alignment.BASELINE)
+								.addComponent(l9).addComponent(text7))
 				.addGroup(
 						layout.createParallelGroup(
-								GroupLayout.Alignment.BASELINE).addComponent(l6)
-								.addComponent(area1))
+								GroupLayout.Alignment.BASELINE)
+								.addComponent(l6).addComponent(area1))
 				.addGroup(
 						layout.createParallelGroup(
-								GroupLayout.Alignment.BASELINE).addComponent(l7)
-								.addComponent(text5).addComponent(b3))
+								GroupLayout.Alignment.BASELINE)
+								.addComponent(l7).addComponent(text5)
+								.addComponent(b3))
 				.addGroup(
 						layout.createParallelGroup(
-								GroupLayout.Alignment.BASELINE).addComponent(l8)
-								.addComponent(text6).addComponent(b4))
+								GroupLayout.Alignment.BASELINE)
+								.addComponent(l8).addComponent(text6)
+								.addComponent(b4))
 				.addGroup(
 						layout.createParallelGroup(
-								GroupLayout.Alignment.BASELINE).addComponent(p3)));
+								GroupLayout.Alignment.BASELINE)
+								.addComponent(checkRemainder))
+				.addGroup(
+						layout.createParallelGroup(
+								GroupLayout.Alignment.BASELINE)
+								.addComponent(l10).addComponent(text8))				
+				.addGroup(
+						layout.createParallelGroup(
+								GroupLayout.Alignment.BASELINE)
+								.addComponent(l11).addComponent(date))				
+				.addGroup(
+						layout.createParallelGroup(
+								GroupLayout.Alignment.BASELINE)
+								.addComponent(p3)));
 
-			}
-	
-	public void setEmailForm(){
+	}
+
+	public void setEmailForm() {
 		l2.setVisible(true);
 		text1.setVisible(true);
 		b1.setVisible(true);
-	
+
 		l3.setVisible(true);
 		text2.setVisible(true);
 		b2.setVisible(true);
-		
+
 		l4.setVisible(false);
 		text3.setVisible(false);
-		
+
 		l5.setVisible(true);
 		text4.setVisible(true);
-		
+
 		l9.setVisible(false);
 		text7.setVisible(false);
-		
+
 		l6.setVisible(true);
 		area1.setVisible(true);
-		
+
 		l7.setVisible(true);
 		text5.setVisible(true);
 		b3.setVisible(true);
-		
+
 		l8.setVisible(false);
 		text6.setVisible(false);
 		b4.setVisible(false);
-		
+
+		checkRemainder.setVisible(true);
+
+		if (checkRemainder.isSelected()) {
+			l10.setVisible(true);
+			text8.setVisible(true);
+
+			l11.setVisible(true);
+			date.setVisible(true);
+		} else {
+			l10.setVisible(false);
+			text8.setVisible(false);
+
+			l11.setVisible(false);
+			date.setVisible(false);
+		}
 		p2.setVisible(true);
 	}
-	
-	public void setSmsForm(){
+
+	public void setSmsForm() {
 		l2.setVisible(false);
 		text1.setVisible(false);
 		b1.setVisible(false);
-	
+
 		l3.setVisible(false);
 		text2.setVisible(false);
 		b2.setVisible(false);
-		
+
 		l4.setVisible(true);
 		text3.setVisible(true);
-		
+
 		l5.setVisible(false);
 		text4.setVisible(false);
-		
+
 		l9.setVisible(false);
 		text7.setVisible(false);
-		
+
 		l6.setVisible(true);
 		area1.setVisible(true);
-		
+
 		l7.setVisible(false);
 		text5.setVisible(false);
 		b3.setVisible(false);
-		
+
 		l8.setVisible(false);
 		text6.setVisible(false);
 		b4.setVisible(false);
+
+		checkRemainder.setVisible(true);
 		
+		if (checkRemainder.isSelected()) {
+			l10.setVisible(true);
+			text8.setVisible(true);
+
+			l11.setVisible(true);
+			date.setVisible(true);
+		} else {
+			l10.setVisible(false);
+			text8.setVisible(false);
+
+			l11.setVisible(false);
+			date.setVisible(false);
+		}		
 		p2.setVisible(true);
 	}
-	
-	public void setMmsForm(){
+
+	public void setMmsForm() {
 		l2.setVisible(false);
 		text1.setVisible(false);
 		b1.setVisible(false);
-	
+
 		l3.setVisible(false);
 		text2.setVisible(false);
 		b2.setVisible(false);
-		
+
 		l4.setVisible(true);
 		text3.setVisible(true);
-		
+
 		l5.setVisible(false);
 		text4.setVisible(false);
-		
+
 		l9.setVisible(false);
 		text7.setVisible(false);
-		
+
 		l6.setVisible(false);
 		area1.setVisible(false);
-		
+
 		l7.setVisible(false);
 		text5.setVisible(false);
 		b3.setVisible(false);
-		
+
 		l8.setVisible(true);
 		text6.setVisible(true);
 		b4.setVisible(true);
+
+		checkRemainder.setVisible(true);
 		
+		if (checkRemainder.isSelected()) {
+			l10.setVisible(true);
+			text8.setVisible(true);
+
+			l11.setVisible(true);
+			date.setVisible(true);
+		} else {
+			l10.setVisible(false);
+			text8.setVisible(false);
+
+			l11.setVisible(false);
+			date.setVisible(false);
+		}
 		p2.setVisible(true);
 	}
-	
-	public void setPrinterForm(){
+
+	public void setPrinterForm() {
 		l2.setVisible(false);
 		text1.setVisible(false);
 		b1.setVisible(false);
-	
+
 		l3.setVisible(false);
 		text2.setVisible(false);
 		b2.setVisible(false);
-		
+
 		l4.setVisible(false);
 		text3.setVisible(false);
-		
+
 		l5.setVisible(false);
 		text4.setVisible(false);
-		
+
 		l9.setVisible(true);
 		text7.setVisible(true);
-		
+
 		l6.setVisible(true);
 		area1.setVisible(true);
-		
+
 		l7.setVisible(false);
 		text5.setVisible(false);
 		b3.setVisible(false);
-		
+
 		l8.setVisible(false);
 		text6.setVisible(false);
 		b4.setVisible(false);
+
+		checkRemainder.setVisible(false);
 		
+		l10.setVisible(false);
+		text8.setVisible(false);
+		
+		l11.setVisible(false);
+		date.setVisible(false);
+
 		p2.setVisible(true);
 	}
 	
+	public void setRemainderFields(boolean b){
+		
+		l10.setVisible(b);
+		text8.setVisible(b);
+		
+		l11.setVisible(b);
+		date.setVisible(b);
+	}
+
 	public void setRadioListener(ActionListener a) {
 		this.radioEmail.addActionListener(a);
 		this.radioSms.addActionListener(a);
@@ -331,6 +417,10 @@ public class GUI extends JFrame {
 
 	public void setSendListener(ActionListener a) {
 		this.b2.addActionListener(a);
+	}
+	
+	public void setCheckboxListener(ItemListener i){
+		this.checkRemainder.addItemListener(i);
 	}
 
 	public JRadioButton getRadioEmail() {
@@ -348,185 +438,4 @@ public class GUI extends JFrame {
 	public JRadioButton getRadioPrinter() {
 		return radioPrinter;
 	}
-
-	
-	/*public void createGui(Message m) {
-
-		save = new JMenuItem("Nachricht speichern");
-		load = new JMenuItem("Nachricht laden");
-		close = new JMenuItem("Schliessen");
-
-		menu = new JMenu("Datei");
-
-		menu.add(save);
-		menu.add(load);
-		menu.add(close);
-
-		menubar = new JMenuBar();
-		menubar.add(menu);
-
-		setJMenuBar(menubar);
-
-		p1 = new JPanel(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
-
-		c.insets = new Insets(5, 5, 5, 5);
-		c.anchor = GridBagConstraints.WEST;
-
-		c.gridx = 0;
-		c.gridy = 0;
-		c.gridwidth = 1;
-		c.gridheight = 1;
-		l1 = new JLabel("Messagetyp:");
-		p1.add(l1, c);
-
-		c.gridx = 1;
-		c.gridy = 0;
-		c.gridwidth = 1;
-		c.gridheight = 1;
-		checkEmail = new JCheckBox("Email");
-		checkEmail.setVerticalTextPosition(SwingConstants.TOP);
-		p1.add(checkEmail, c);
-
-		c.gridx = 2;
-		c.gridy = 0;
-		c.gridwidth = 1;
-		c.gridheight = 1;
-		checkSms = new JCheckBox("SMS");
-		checkSms.setVerticalTextPosition(SwingConstants.TOP);
-		p1.add(checkSms, c);
-
-		c.gridx = 3;
-		c.gridy = 0;
-		c.gridwidth = 1;
-		c.gridheight = 1;
-		checkMms = new JCheckBox("MMS");
-		checkMms.setVerticalTextPosition(SwingConstants.TOP);
-		p1.add(checkMms, c);
-
-		c.gridx = 4;
-		c.gridy = 0;
-		c.gridwidth = 1;
-		c.gridheight = 1;
-		checkPrinter = new JCheckBox("Printer");
-		checkPrinter.setVerticalTextPosition(SwingConstants.TOP);
-		p1.add(checkPrinter, c);
-
-		c.gridx = 0;
-		c.gridy = 1;
-		c.gridwidth = 1;
-		c.gridheight = 1;
-		l2 = new JLabel("Adresse");
-		p1.add(l2, c);
-
-		c.gridx = 1;
-		c.gridy = 1;
-		c.gridwidth = 5;
-		c.gridheight = 1;
-		text1 = new JTextField(20);
-		// text1.setText(m.getAdress);
-		p1.add(text1, c);
-
-		if (checkEmail.isSelected() || checkMms.isSelected()
-				|| checkSms.isSelected()) {
-
-			c.gridx = 0;
-			c.gridy = 2;
-			c.gridwidth = 1;
-			c.gridheight = 1;
-			l3 = new JLabel("Betreff");
-			p1.add(l3, c);
-
-			c.gridx = 1;
-			c.gridy = 2;
-			c.gridwidth = 5;
-			c.gridheight = 1;
-			text2 = new JTextField(20);
-			p1.add(text2, c);
-		}
-
-		if (checkEmail.isSelected() || checkPrinter.isSelected()
-				|| checkSms.isSelected()) {
-			c.gridx = 0;
-			c.gridy = GridBagConstraints.RELATIVE;
-			c.gridwidth = 1;
-			c.gridheight = 3;
-			l4 = new JLabel("Messagetext");
-			p1.add(l4, c);
-
-			c.gridx = 1;
-			c.gridy = GridBagConstraints.RELATIVE;
-			c.gridwidth = 5;
-			c.gridheight = 3;
-			area1 = new JTextArea(4, 20);
-			area1.setLineWrap(true);
-			area1.setAutoscrolls(true);
-			p1.add(area1, c);
-		}
-
-		if (checkMms.isSelected()) {
-			c.gridx = 0;
-			c.gridy = GridBagConstraints.RELATIVE;
-			c.gridwidth = 1;
-			c.gridheight = 1;
-			l5 = new JLabel("Bild");
-			p1.add(l5, c);
-
-			c.gridx = 1;
-			c.gridy = GridBagConstraints.RELATIVE;
-			c.gridwidth = 3;
-			c.gridheight = 1;
-			text3 = new JTextField(15);
-			p1.add(text3, c);
-
-			c.gridx = 4;
-			c.gridy = GridBagConstraints.RELATIVE;
-			c.gridwidth = 2;
-			c.gridheight = 1;
-			b1 = new JButton("Bild wählen");
-			p1.add(b1, c);
-		}
-
-		if (checkEmail.isSelected()) {
-			c.gridx = 0;
-			c.gridy = GridBagConstraints.RELATIVE;
-			c.gridwidth = 1;
-			c.gridheight = 1;
-			l5 = new JLabel("Anhang");
-			p1.add(l5, c);
-
-			c.gridx = 1;
-			c.gridy = GridBagConstraints.RELATIVE;
-			c.gridwidth = 3;
-			c.gridheight = 1;
-			text4 = new JTextField(15);
-			p1.add(text4, c);
-
-			c.gridx = 4;
-			c.gridy = GridBagConstraints.RELATIVE;
-			c.gridwidth = 2;
-			c.gridheight = 1;
-			b4 = new JButton("File wählen");
-			p1.add(b4, c);
-		}
-
-		c.gridx = 1;
-		c.gridy = GridBagConstraints.RELATIVE;
-		c.gridwidth = 2;
-		c.gridheight = 1;
-		b2 = new JButton("Senden");
-		p1.add(b2, c);
-
-		c.gridx = 3;
-		c.gridy = GridBagConstraints.RELATIVE;
-		c.gridwidth = 2;
-		c.gridheight = 1;
-		b3 = new JButton("Löschen");
-		p1.add(b3, c);
-
-		add(p1);
-
-		setSize(500, 800);
-		setVisible(true);
-	}*/
 }
