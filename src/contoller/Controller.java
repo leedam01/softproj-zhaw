@@ -2,6 +2,8 @@ package contoller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 import javax.swing.JRadioButton;
 
@@ -22,6 +24,7 @@ public class Controller {
 	public void setListener(){
 		gui.setRadioListener(new RadioListener());
 		gui.setSendListener(new SendListener());
+		gui.setCheckboxListener(new CheckboxListener());
 	}
 	
 	class RadioListener implements ActionListener{
@@ -48,6 +51,19 @@ public class Controller {
 		
 	}
 	
+	class CheckboxListener implements ItemListener{
+
+		public void itemStateChanged(ItemEvent e) {
+			
+			if (e.getStateChange() == ItemEvent.SELECTED){
+				gui.setRemainderFields(true);
+			} else {
+				gui.setRemainderFields(false);
+			}
+			
+		}
+		
+	}
 	
     public static void main(String[] args) {
         Controller c = new Controller();
