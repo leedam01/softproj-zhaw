@@ -88,10 +88,10 @@ public class Messenger implements MessageType, Runnable {
 				while (msgIter.hasNext()) {
 					msg = messages.listIterator().next();
 					currentTime.setTime(System.currentTimeMillis());
-					if (msg.getTimeToNotify().compareTo(currentTime) >= 0) {
+					if (msg.getTimeToNotify() != null && msg.getTimeToNotify().compareTo(currentTime) >= 0) {
 						this.sendNotification(msg);
 					}
-					if (msg.getTimeToSend().compareTo(currentTime) >= 0) {
+					if (msg.getTimeToSend() != null && msg.getTimeToSend().compareTo(currentTime) >= 0) {
 						this.sendMessage(msg);
 					}
 				}
