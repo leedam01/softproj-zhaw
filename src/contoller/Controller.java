@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.ArrayList;
 
 import javax.swing.JRadioButton;
 
@@ -13,6 +14,7 @@ import view.GUI;
 public class Controller {
 	private Message message;
 	private GUI gui;
+	private Object initSource;
 	
 
 	public Controller(){
@@ -25,8 +27,42 @@ public class Controller {
 		gui.setRadioListener(new RadioListener());
 		gui.setSendListener(new SendListener());
 		gui.setCheckboxListener(new CheckboxListener());
+		gui.setAdressbookListener(new AdressbookListener());
 	}
 	
+	class AdressbookListener implements ActionListener{
+
+		public void actionPerformed(ActionEvent e) {
+
+			Object source = e.getSource();
+			if (source == gui.getB1() || source == gui.getB2()) {
+				
+				initSource = source;
+				
+				ArrayList<String> array = new ArrayList<String>();
+				array.add("test");
+				array.add("test2");
+				gui.createDialog(array);
+			}
+			if (source == gui.getB7()){
+				//Contact c = new Contact();
+				gui.getLimo().addElement(gui.getText9().getText());
+				gui.getText9().setText("");
+			}
+			if (source == gui.getB8()){
+				String contact = gui.getAdressList().getSelectedValue();
+				if (initSource == gui.getB1()){
+					gui.getText1().setText(contact);
+				} else {
+					gui.getText2().setText(contact);
+				}
+				gui.getDialog().dispose();
+			}
+			
+		}
+		
+	}
+		
 	class RadioListener implements ActionListener{
 
 		public void actionPerformed(ActionEvent e) {
