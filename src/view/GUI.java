@@ -1,19 +1,23 @@
 package view;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemListener;
+import java.net.URL;
 import java.util.ArrayList;
 
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultListModel;
 import javax.swing.GroupLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -24,15 +28,16 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import sender.Message;
 
 import com.toedter.calendar.JDateChooser;
 
 public class GUI extends JFrame {
-	private JPanel p2, p3, p4, p5;
+	private JPanel p2, p3, p4, p5, p6;
 	private JRadioButton radioEmail, radioSms, radioMms, radioPrinter;
-	private JLabel l1, l2, l3, l4, l5, l6, l7, l8, l9, l10, l11, l12, l13;
+	private JLabel l1, l2, l3, l4, l5, l6, l7, l8, l9, l10, l11, l12, l13, l14;
 	private JTextField text1, text2, text3, text4, text5, text6, text7, text8, text9;
 	private JTextArea area1;
 	private JButton b1, b2, b3, b4, b5, b6, b7, b8;
@@ -42,7 +47,9 @@ public class GUI extends JFrame {
 	private JDateChooser date;
 	private DefaultListModel<String> limo;
 	private JDialog dialog;
-
+	private JFileChooser fc;
+	private ImageIcon icon;
+	
 	public GUI(Message m) {
 
 		this.createGuiV2(m);
@@ -83,12 +90,16 @@ public class GUI extends JFrame {
 
 		radioEmail.setSelected(true);
 
-		p2.setLayout(new FlowLayout());
-		p2.add(l1);
-		p2.add(radioEmail);
-		p2.add(radioSms);
-		p2.add(radioMms);
-		p2.add(radioPrinter);
+		p2.setLayout(new BorderLayout());
+		p6 = new JPanel();
+		p6.setLayout(new FlowLayout());
+		p6.add(l1);
+		p6.add(radioEmail);
+		p6.add(radioSms);
+		p6.add(radioMms);
+		p6.add(radioPrinter);
+		p2.add(p6,BorderLayout.SOUTH);
+		
 
 		getContentPane().add(p2, BorderLayout.NORTH);
 
@@ -132,6 +143,8 @@ public class GUI extends JFrame {
 		b4 = new JButton("Datei");
 		b5 = new JButton("Senden");
 		b6 = new JButton("Löschen");
+		
+		fc = new JFileChooser();
 
 		p3 = new JPanel();
 		p3.add(b5);
@@ -462,6 +475,31 @@ public class GUI extends JFrame {
 		dialog.setVisible(true);
 		
 	}
+	
+	public void changeBackground(JComponent c, Color color){
+		if (c instanceof JTextField ){
+			c.setBackground(color);
+		}
+	}
+	
+	public void createWarning(){		 
+		l14 = new JLabel("Felder sind entweder leer oder fehlerhaft.", icon, SwingConstants.CENTER);
+		l14.setForeground(Color.RED);
+		try {
+			p2.remove(l14);
+			p2.add(l14, BorderLayout.NORTH);
+		} catch (Exception e) {
+			p2.add(l14, BorderLayout.NORTH);
+		}
+		revalidate();
+	}
+	
+	public int openFileChooser(FileNameExtensionFilter filter){
+		if (filter != null) {
+			fc.setFileFilter(filter);
+		}
+		return fc.showOpenDialog(GUI.this);
+	}
 
 	public void setRadioListener(ActionListener a) {
 		this.radioEmail.addActionListener(a);
@@ -471,7 +509,7 @@ public class GUI extends JFrame {
 	}
 
 	public void setSendListener(ActionListener a) {
-		this.b2.addActionListener(a);
+		this.b5.addActionListener(a);
 	}
 
 	public void setCheckboxListener(ItemListener i) {
@@ -483,6 +521,11 @@ public class GUI extends JFrame {
 		this.b2.addActionListener(a);
 		this.b7.addActionListener(a);
 		this.b8.addActionListener(a);
+	}
+	
+	public void setFileChooserListener(ActionListener a){
+		this.b3.addActionListener(a);
+		this.b4.addActionListener(a);
 	}
 
 	public JRadioButton getRadioEmail() {
@@ -539,6 +582,30 @@ public class GUI extends JFrame {
 
 	public JTextField getText2() {
 		return text2;
+	}
+
+	public JButton getB3() {
+		return b3;
+	}
+
+	public JButton getB4() {
+		return b4;
+	}
+
+	public JTextField getText5() {
+		return text5;
+	}
+
+	public JTextField getText6() {
+		return text6;
+	}
+
+	public JFileChooser getFc() {
+		return fc;
+	}
+
+	public JTextField getText3() {
+		return text3;
 	}
 	
 	
