@@ -74,7 +74,7 @@ public abstract class Message implements Sendable<Address>, MessageType {
 	public void setTimeNotified(Date timeNotified) {
 		this.timeNotified = timeNotified;
 	}
-	
+
 	public UUID getMsgId() {
 		return this.msgId;
 	}

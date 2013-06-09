@@ -30,6 +30,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+
 import ch.zhaw.multichannel.message.Message;
 
 import com.toedter.calendar.JDateChooser;
@@ -498,7 +499,7 @@ public class Gui extends JFrame {
 		if (filter != null) {
 			fc.setFileFilter(filter);
 		}
-		return fc.showOpenDialog(GUI.this);
+		return fc.showOpenDialog(Gui.this);
 	}
 
 	public void setRadioListener(ActionListener a) {
@@ -606,5 +607,7 @@ public class Gui extends JFrame {
 
 	public JTextField getText3() {
 		return text3;
-	}	
+	}
+	
+	
 }
