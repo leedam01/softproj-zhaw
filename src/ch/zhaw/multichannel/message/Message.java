@@ -1,6 +1,7 @@
 package ch.zhaw.multichannel.message;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -21,6 +22,7 @@ public abstract class Message implements Sendable<Address>, MessageType {
 	
 	public Message() {
 		this.msgId = UUID.randomUUID();
+		this.recipients = new HashSet<Address>();
 	}
 	
 	public Set<Address> getRecipients() {
@@ -30,6 +32,7 @@ public abstract class Message implements Sendable<Address>, MessageType {
 	public void addRecipient(Address address) {
 		this.recipients.add(address);
 	}
+	
 
 	public void removeRecipient(Address address) {
 		this.recipients.remove(address);

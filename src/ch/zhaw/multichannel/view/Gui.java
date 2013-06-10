@@ -6,7 +6,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemListener;
-import java.net.URL;
 import java.util.ArrayList;
 
 import javax.swing.ButtonGroup;
@@ -21,6 +20,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
@@ -29,9 +29,6 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
-
-
-import ch.zhaw.multichannel.message.Message;
 
 import com.toedter.calendar.JDateChooser;
 
@@ -51,12 +48,12 @@ public class Gui extends JFrame {
 	private JFileChooser fc;
 	private ImageIcon icon;
 	
-	public Gui(Message m) {
+	public Gui() {
 
-		this.createGuiV2(m);
+		this.createGuiV2();
 	}
 
-	public void createGuiV2(Message m) {
+	public void createGuiV2() {
 
 		getContentPane().setLayout(new BorderLayout());
 
@@ -486,13 +483,22 @@ public class Gui extends JFrame {
 	public void createWarning(){		 
 		l14 = new JLabel("Felder sind entweder leer oder fehlerhaft.", icon, SwingConstants.CENTER);
 		l14.setForeground(Color.RED);
-		try {
-			p2.remove(l14);
-			p2.add(l14, BorderLayout.NORTH);
-		} catch (Exception e) {
-			p2.add(l14, BorderLayout.NORTH);
-		}
+		removeWarning();
+		p2.add(l14, BorderLayout.NORTH);
 		revalidate();
+	}
+	
+	public void removeWarning(){
+		try{
+			p2.remove(l14);
+		} catch (Exception e){
+			System.out.println("Warning nicht vorhanden");
+		}
+	}
+	
+	public void createNotification(String str){
+		//JOptionPane op = new JOptionPane();
+		JOptionPane.showMessageDialog(this, str);
 	}
 	
 	public int openFileChooser(FileNameExtensionFilter filter){
@@ -607,6 +613,14 @@ public class Gui extends JFrame {
 
 	public JTextField getText3() {
 		return text3;
+	}
+
+	public JCheckBox getCheckRemainder() {
+		return checkRemainder;
+	}
+
+	public JTextArea getArea1() {
+		return area1;
 	}
 	
 	

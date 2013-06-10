@@ -5,12 +5,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Observable;
 import java.util.UUID;
 
 import ch.zhaw.multichannel.message.Message;
 import ch.zhaw.multichannel.message.MessageType;
 
-public class Messenger implements MessageType, Runnable {
+public class Messenger extends Observable implements MessageType, Runnable{
 
 	private List<Message> messages;
 	private List<Message> messageArchive;
@@ -71,7 +72,8 @@ public class Messenger implements MessageType, Runnable {
 	}
 	
 	public void sendNotification(Message msg) {
-		System.out.println(msg.getMsgId().toString() + " will be sent at " + msg.getTimeToSend().toString() + " to " + msg.getRecipients().toString());
+		notifyObservers(msg);
+//		System.out.println(msg.getMsgId().toString() + " will be sent at " + msg.getTimeToSend().toString() + " to " + msg.getRecipients().toString());
 		msg.setTimeNotified(Calendar.getInstance().getTime());
 	}
 

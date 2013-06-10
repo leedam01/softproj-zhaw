@@ -9,9 +9,9 @@ public class PrintAddress implements Address {
 	}
 
 	@Override
-	public void validate() {
+	public boolean validate() {
 		// TODO Auto-generated method stub
-		return;
+		return false;
 	}
 
 }

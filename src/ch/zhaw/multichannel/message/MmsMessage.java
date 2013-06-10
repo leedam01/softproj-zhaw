@@ -6,8 +6,9 @@ public class MmsMessage extends Message {
 
 	private File mmsImage;
 	
-	public MmsMessage() {
+	public MmsMessage(File f) {
 		// TODO Auto-generated constructor stub
+		this.mmsImage = f;
 	}
 
 	public String getImagePath(){
