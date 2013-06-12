@@ -8,6 +8,7 @@ import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.regex.Pattern;
@@ -50,11 +51,13 @@ public class Controller implements Observer {
 	private EmailMessage email;
 	private PrintMessage print;
 	private Messenger mess;
+	private Calendar c;
 
 	public Controller() {
 		gui = new Gui();
 		setListener();
 		mess = new Messenger();
+		c = Calendar.getInstance();
 	}
 
 	/**
@@ -265,14 +268,20 @@ public class Controller implements Observer {
 					Pattern p = Pattern.compile("[0-9]{2}:[0-9]{2}");
 					if (p.matcher(gui.getText8().getText()).matches()) {
 						String[] hm = gui.getText8().getText().split(":");
-						Calendar c = gui.getDate().getCalendar();
-						c.set(Calendar.HOUR, Integer.parseInt(hm[0]));
-						c.set(Calendar.MINUTE, Integer.parseInt(hm[1]));
-						Date d = c.getTime();
-						c.set(Calendar.MINUTE, Integer.parseInt(hm[1]) - 15);
-						Date d2 = c.getTime();
-						email.setTimeToSend(d);
-						email.setTimeToNotify(d2);
+						try {
+							c = gui.getDate().getCalendar();
+							c.set(Calendar.HOUR, Integer.parseInt(hm[0]));
+							c.set(Calendar.MINUTE, Integer.parseInt(hm[1]));
+							Date d = c.getTime();
+							c.set(Calendar.MINUTE, Integer.parseInt(hm[1]) - 15);
+							Date d2 = c.getTime();
+							email.setTimeToSend(d);
+							email.setTimeToNotify(d2);
+						} catch (Exception ex) {
+							isSendable = false;
+							gui.changeBackground(gui.getDate(), new Color(255,
+									100, 100));
+						}
 					} else {
 						gui.changeBackground(gui.getText8(), new Color(255,
 								100, 100));
@@ -302,18 +311,25 @@ public class Controller implements Observer {
 					}
 				}
 				gui.changeBackground(gui.getText8(), new Color(255, 255, 255));
+				gui.changeBackground(gui.getDate(), new Color(255, 255, 255));
 				if (gui.getCheckRemainder().isSelected()) {
 					Pattern p = Pattern.compile("[0-9]{2}:[0-9]{2}");
 					if (p.matcher(gui.getText8().getText()).matches()) {
 						String[] hm = gui.getText8().getText().split(":");
-						Calendar c = gui.getDate().getCalendar();
-						c.set(Calendar.HOUR, Integer.parseInt(hm[0]));
-						c.set(Calendar.MINUTE, Integer.parseInt(hm[1]));
-						Date d = c.getTime();
-						c.set(Calendar.MINUTE, Integer.parseInt(hm[1]) - 15);
-						Date d2 = c.getTime();
-						email.setTimeToSend(d);
-						email.setTimeToNotify(d2);
+						try {
+							c = gui.getDate().getCalendar();
+							c.set(Calendar.HOUR, Integer.parseInt(hm[0]));
+							c.set(Calendar.MINUTE, Integer.parseInt(hm[1]));
+							Date d = c.getTime();
+							c.set(Calendar.MINUTE, Integer.parseInt(hm[1]) - 15);
+							Date d2 = c.getTime();
+							sms.setTimeToSend(d);
+							sms.setTimeToNotify(d2);
+						} catch (Exception ex) {
+							isSendable = false;
+							gui.changeBackground(gui.getDate(), new Color(255,
+									100, 100));
+						}
 					} else {
 						gui.changeBackground(gui.getText8(), new Color(255,
 								100, 100));
@@ -324,7 +340,7 @@ public class Controller implements Observer {
 				ch = SmsChannel.getInstance();
 
 			}
-			//validates the phonenumber field, checks for remainder
+			// validates the phonenumber field, checks for remainder
 			if (gui.getRadioMms().isSelected()) {
 
 				mms = new MmsMessage(gui.getFc().getSelectedFile());
@@ -346,14 +362,20 @@ public class Controller implements Observer {
 					Pattern p = Pattern.compile("[0-9]{2}:[0-9]{2}");
 					if (p.matcher(gui.getText8().getText()).matches()) {
 						String[] hm = gui.getText8().getText().split(":");
-						Calendar c = gui.getDate().getCalendar();
-						c.set(Calendar.HOUR, Integer.parseInt(hm[0]));
-						c.set(Calendar.MINUTE, Integer.parseInt(hm[1]));
-						Date d = c.getTime();
-						c.set(Calendar.MINUTE, Integer.parseInt(hm[1]) - 15);
-						Date d2 = c.getTime();
-						email.setTimeToSend(d);
-						email.setTimeToNotify(d2);
+						try {
+							c = gui.getDate().getCalendar();
+							c.set(Calendar.HOUR, Integer.parseInt(hm[0]));
+							c.set(Calendar.MINUTE, Integer.parseInt(hm[1]));
+							Date d = c.getTime();
+							c.set(Calendar.MINUTE, Integer.parseInt(hm[1]) - 15);
+							Date d2 = c.getTime();
+							mms.setTimeToSend(d);
+							mms.setTimeToNotify(d2);
+						} catch (Exception ex) {
+							isSendable = false;
+							gui.changeBackground(gui.getDate(), new Color(255,
+									100, 100));
+						}
 					} else {
 						gui.changeBackground(gui.getText8(), new Color(255,
 								100, 100));
@@ -363,8 +385,9 @@ public class Controller implements Observer {
 				ch = MmsChannel.getInstance();
 
 			}
-			//handles a send-event to a printer
-			// due to time reasons, this option is very slim. You have to know either the name of the printer or the ip-address
+			// handles a send-event to a printer
+			// due to time reasons, this option is very slim. You have to know
+			// either the name of the printer or the ip-address
 			if (gui.getRadioPrinter().isSelected()) {
 				print = new PrintMessage();
 				print.setText(gui.getArea1().getText());

@@ -127,8 +127,8 @@ public class Gui extends JFrame {
 
 		add(panel);
 		setVisible(true);
-		pack();
 		// setSize(600, 400);
+		pack();
 	}
 
 	/**
@@ -297,6 +297,7 @@ public class Gui extends JFrame {
 			setRemainderFields(false);
 		}
 		p2.setVisible(true);
+		pack();
 	}
 
 	/**
@@ -339,6 +340,7 @@ public class Gui extends JFrame {
 			setRemainderFields(false);
 		}
 		p2.setVisible(true);
+		pack();
 	}
 
 	/**
@@ -381,6 +383,7 @@ public class Gui extends JFrame {
 			setRemainderFields(false);
 		}
 		p2.setVisible(true);
+		pack();
 	}
 
 	/**
@@ -421,6 +424,7 @@ public class Gui extends JFrame {
 		setRemainderFields(false);
 
 		p2.setVisible(true);
+		pack();
 	}
 
 	/**
