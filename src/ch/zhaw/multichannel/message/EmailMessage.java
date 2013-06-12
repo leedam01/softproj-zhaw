@@ -13,7 +13,7 @@ public class EmailMessage extends Message {
 	private List<Address> ccRecipients;
 	
 	public EmailMessage() {
-		// TODO Auto-generated constructor stub
+		super();
 		ccRecipients = new ArrayList<Address>();
 	}
 
@@ -36,4 +36,9 @@ public class EmailMessage extends Message {
 	public void addCcRecipient(Address a){
 		this.ccRecipients.add(a);
 	}
+
+	public void setAttachement(File attachement) {
+		this.attachement = attachement;
+	}
+	
 }

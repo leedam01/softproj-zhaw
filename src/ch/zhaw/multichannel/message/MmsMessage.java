@@ -8,6 +8,7 @@ public class MmsMessage extends Message {
 	
 	public MmsMessage(File f) {
 		// TODO Auto-generated constructor stub
+		super();
 		this.mmsImage = f;
 	}
 

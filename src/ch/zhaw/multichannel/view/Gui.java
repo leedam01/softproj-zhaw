@@ -7,6 +7,7 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultListModel;
@@ -105,8 +106,8 @@ public class Gui extends JFrame {
 		setEmailForm();
 		
 
-		b8 = new JButton("Auswählen");
-		b7 = new JButton("Hinzufügen");
+		b8 = new JButton("Auswaehlen");
+		b7 = new JButton("Hinzufuegen");
 
 
 		add(panel);
@@ -116,7 +117,7 @@ public class Gui extends JFrame {
 	}
 
 	public void createAllFields() {
-		l2 = new JLabel("Empfänger");
+		l2 = new JLabel("Empfaenger");
 		l3 = new JLabel("CC");
 		l4 = new JLabel("Telefonnummer");
 		l5 = new JLabel("Betreff");
@@ -133,26 +134,28 @@ public class Gui extends JFrame {
 		text5 = new JTextField();
 		text6 = new JTextField();
 		text7 = new JTextField();
-		text8 = new JTextField(10);
+		text8 = new JTextField("HH:MM");
 
 		b1 = new JButton("Adressbuch");
 		b2 = new JButton("Adressbuch");
 		b3 = new JButton("Datei");
 		b4 = new JButton("Datei");
 		b5 = new JButton("Senden");
-		b6 = new JButton("Löschen");
+		b6 = new JButton("Loeschen");
 		
 		fc = new JFileChooser();
 
 		p3 = new JPanel();
 		p3.add(b5);
 		p3.add(b6);
-
+		
 		area1 = new JTextArea(10, 10);
+		area1.setLineWrap(true);
+		area1.setWrapStyleWord(true);
 
 		date = new JDateChooser();
 
-		checkRemainder = new JCheckBox("Senden zu einem späteren Zeitpunkt");
+		checkRemainder = new JCheckBox("Senden zu einem spaeteren Zeitpunkt");
 
 		layout.setHorizontalGroup(layout
 				.createSequentialGroup()
@@ -430,7 +433,7 @@ public class Gui extends JFrame {
 
 		dialog.setTitle("Adressbuch");
 		
-		l12 = new JLabel("Neuer Kontakt hinzufügen:");
+		l12 = new JLabel("Neuer Kontakt hinzufuegen:");
 		text9 = new JTextField(20);
 		
 		limo = new DefaultListModel<String>();
@@ -501,6 +504,22 @@ public class Gui extends JFrame {
 		JOptionPane.showMessageDialog(this, str);
 	}
 	
+	public void createErrorNotification(String str){
+		JOptionPane.showMessageDialog(dialog, str, "Fehler", JOptionPane.ERROR_MESSAGE);
+	}
+	
+	public void clearAllTextfields(){
+		this.text1.setText("");
+		this.text2.setText("");
+		this.text3.setText("");
+		this.text4.setText("");
+		this.text5.setText("");
+		this.text6.setText("");
+		this.text7.setText("");
+		this.text8.setText("");
+		this.area1.setText("");
+	}
+	
 	public int openFileChooser(FileNameExtensionFilter filter){
 		if (filter != null) {
 			fc.setFileFilter(filter);
@@ -508,6 +527,10 @@ public class Gui extends JFrame {
 		return fc.showOpenDialog(Gui.this);
 	}
 
+	public void setClearListener(ActionListener a){
+		this.b6.addActionListener(a);
+	}
+	
 	public void setRadioListener(ActionListener a) {
 		this.radioEmail.addActionListener(a);
 		this.radioSms.addActionListener(a);
@@ -622,6 +645,21 @@ public class Gui extends JFrame {
 	public JTextArea getArea1() {
 		return area1;
 	}
-	
+
+	public JTextField getText4() {
+		return text4;
+	}
+
+	public JTextField getText7() {
+		return text7;
+	}
+
+	public JTextField getText8() {
+		return text8;
+	}
+
+	public JDateChooser getDate() {
+		return date;
+	}
 	
 }

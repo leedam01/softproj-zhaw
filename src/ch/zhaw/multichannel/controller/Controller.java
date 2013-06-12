@@ -6,8 +6,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.regex.Pattern;
 
 import javax.swing.JFileChooser;
 import javax.swing.JRadioButton;
@@ -16,27 +19,35 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import ch.zhaw.multichannel.contact.Address;
 import ch.zhaw.multichannel.contact.EmailAddress;
 import ch.zhaw.multichannel.contact.MobileAddress;
+import ch.zhaw.multichannel.contact.PrintAddress;
 import ch.zhaw.multichannel.message.EmailMessage;
 import ch.zhaw.multichannel.message.Message;
 import ch.zhaw.multichannel.message.MmsMessage;
+import ch.zhaw.multichannel.message.PrintMessage;
 import ch.zhaw.multichannel.message.SmsMessage;
 import ch.zhaw.multichannel.messenger.Channel;
 import ch.zhaw.multichannel.messenger.EmailChannel;
+import ch.zhaw.multichannel.messenger.Messenger;
 import ch.zhaw.multichannel.messenger.MmsChannel;
 import ch.zhaw.multichannel.messenger.PrintChannel;
 import ch.zhaw.multichannel.messenger.SmsChannel;
 import ch.zhaw.multichannel.view.Gui;
 
 public class Controller implements Observer {
-	private Message message;
 	private Gui gui;
 	private Object initSource;
 	private boolean isSendable;
 	private Address empf;
+	private MmsMessage mms;
+	private SmsMessage sms;
+	private EmailMessage email;
+	private PrintMessage print;
+	private Messenger mess;
 
 	public Controller() {
 		gui = new Gui();
 		setListener();
+		mess = new Messenger();
 	}
 
 	public void setListener() {
@@ -45,14 +56,24 @@ public class Controller implements Observer {
 		gui.setCheckboxListener(new CheckboxListener());
 		gui.setAdressbookListener(new AdressbookListener());
 		gui.setFileChooserListener(new FileChooserListener());
+		gui.setClearListener(new ClearListener());
 	}
 
 	public void update(Observable o, Object obj) {
-		// TODO Auto-generated method stub
 		Message msg = (Message) obj;
 		gui.createNotification(msg.getMsgId().toString() + " will be sent at "
 				+ msg.getTimeToSend().toString() + " to "
 				+ msg.getRecipients().toString());
+	}
+	
+	class ClearListener implements ActionListener{
+
+
+		public void actionPerformed(ActionEvent arg0) {
+			gui.clearAllTextfields();
+			
+		}
+		
 	}
 
 	class FileChooserListener implements ActionListener {
@@ -91,20 +112,24 @@ public class Controller implements Observer {
 				initSource = source;
 
 				ArrayList<String> array = new ArrayList<String>();
-				array.add("test");
-				array.add("test2");
 				gui.createDialog(array);
 			}
 			if (source == gui.getB7()) {
-				// Contact c = new Contact();
-				gui.getLimo().addElement(gui.getText9().getText());
-				gui.getText9().setText("");
+				Address addr = new EmailAddress(gui.getText9().getText());
+				if (addr.validate()) {
+					gui.getLimo().addElement(addr.getAddress());
+					gui.getText9().setText("");
+				} else {
+					gui.createErrorNotification("Email nicht gueltig");
+				}
 			}
 			if (source == gui.getB8()) {
 				String contact = gui.getAdressList().getSelectedValue();
 				if (initSource == gui.getB1()) {
+					contact += ";" + gui.getText1().getText();
 					gui.getText1().setText(contact);
 				} else {
+					contact += ";" + gui.getText2().getText();
 					gui.getText2().setText(contact);
 				}
 				gui.getDialog().dispose();
@@ -137,7 +162,7 @@ public class Controller implements Observer {
 			isSendable = true;
 			Channel ch = null;
 			if (gui.getRadioEmail().isSelected()) {
-				message = new EmailMessage();
+				email = new EmailMessage();
 				String[] strArray = gui.getText1().getText().split(";|;\\s");
 				gui.changeBackground(gui.getText1(), new Color(255, 255, 255));
 				for (String str : strArray) {
@@ -147,29 +172,53 @@ public class Controller implements Observer {
 						gui.changeBackground(gui.getText1(), new Color(255,
 								100, 100));
 					} else {
-						message.addRecipient(empf);
+						email.addRecipient(empf);
 					}
 				}
 
 				String[] strArrayCc = gui.getText2().getText().split(";|;\\s");
 				gui.changeBackground(gui.getText2(), new Color(255, 255, 255));
-				for (String str : strArrayCc) {
-					empf = new EmailAddress(str);
-					if (!empf.validate()) {
-						isSendable = false;
-						gui.changeBackground(gui.getText2(), new Color(255,
-								100, 100));
-					} else {
-						// message.addCcRecipient(empf);
+				if (!gui.getText2().getText().isEmpty()) {
+					for (String str : strArrayCc) {
+						empf = new EmailAddress(str);
+						if (!empf.validate()) {
+							isSendable = false;
+							gui.changeBackground(gui.getText2(), new Color(255,
+									100, 100));
+						} else {
+							email.addCcRecipient(empf);
+						}
 					}
 				}
-				message.setText(gui.getArea1().getText());
+
+				gui.changeBackground(gui.getText8(), new Color(255, 255, 255));
+				if (gui.getCheckRemainder().isSelected()) {
+					Pattern p = Pattern.compile("[0-9]{2}:[0-9]{2}");
+					if (p.matcher(gui.getText8().getText()).matches()){
+						String[] hm = gui.getText8().getText().split(":");
+						Calendar c = gui.getDate().getCalendar();
+						c.set(Calendar.HOUR, Integer.parseInt(hm[0]));
+						c.set(Calendar.MINUTE, Integer.parseInt(hm[1]));
+						Date d = c.getTime();
+						c.set(Calendar.MINUTE, Integer.parseInt(hm[1]) - 15);
+						Date d2 = c.getTime();
+						email.setTimeToSend(d);
+						email.setTimeToNotify(d2);
+					} else{
+						gui.changeBackground(gui.getText8(), new Color(255,
+								100, 100));
+						isSendable = false;
+					}
+				}
+				email.setText(gui.getArea1().getText());
+				email.setSubject(gui.getText4().getText());
+				email.setAttachement(gui.getFc().getSelectedFile());
 				// message.setSbject();
 				ch = EmailChannel.getInstance();
 			}
 
 			if (gui.getRadioSms().isSelected()) {
-				message = new SmsMessage();
+				sms = new SmsMessage();
 
 				gui.changeBackground(gui.getText3(), new Color(255, 255, 255));
 				String[] strArrayPhone = gui.getText3().getText()
@@ -181,17 +230,35 @@ public class Controller implements Observer {
 						gui.changeBackground(gui.getText3(), new Color(255,
 								100, 100));
 					} else {
-						message.addRecipient(empf);
+						sms.addRecipient(empf);
 					}
 				}
-
-				message.setText(gui.getArea1().getText());
+				gui.changeBackground(gui.getText8(), new Color(255, 255, 255));
+				if (gui.getCheckRemainder().isSelected()) {
+					Pattern p = Pattern.compile("[0-9]{2}:[0-9]{2}");
+					if (p.matcher(gui.getText8().getText()).matches()){
+						String[] hm = gui.getText8().getText().split(":");
+						Calendar c = gui.getDate().getCalendar();
+						c.set(Calendar.HOUR, Integer.parseInt(hm[0]));
+						c.set(Calendar.MINUTE, Integer.parseInt(hm[1]));
+						Date d = c.getTime();
+						c.set(Calendar.MINUTE, Integer.parseInt(hm[1]) - 15);
+						Date d2 = c.getTime();
+						email.setTimeToSend(d);
+						email.setTimeToNotify(d2);
+					} else{
+						gui.changeBackground(gui.getText8(), new Color(255,
+								100, 100));
+						isSendable = false;
+					}
+				}
+				sms.setText(gui.getArea1().getText());
 				ch = SmsChannel.getInstance();
 
 			}
 			if (gui.getRadioMms().isSelected()) {
 
-				message = new MmsMessage(gui.getFc().getSelectedFile());
+				mms = new MmsMessage(gui.getFc().getSelectedFile());
 				gui.changeBackground(gui.getText3(), new Color(255, 255, 255));
 				String[] strArrayPhone = gui.getText3().getText()
 						.split(";|;\\s");
@@ -202,24 +269,68 @@ public class Controller implements Observer {
 						gui.changeBackground(gui.getText3(), new Color(255,
 								100, 100));
 					} else {
-						message.addRecipient(empf);
+						mms.addRecipient(empf);
 					}
 				}
+				gui.changeBackground(gui.getText8(), new Color(255, 255, 255));
+				if (gui.getCheckRemainder().isSelected()) {
+					Pattern p = Pattern.compile("[0-9]{2}:[0-9]{2}");
+					if (p.matcher(gui.getText8().getText()).matches()){
+						String[] hm = gui.getText8().getText().split(":");
+						Calendar c = gui.getDate().getCalendar();
+						c.set(Calendar.HOUR, Integer.parseInt(hm[0]));
+						c.set(Calendar.MINUTE, Integer.parseInt(hm[1]));
+						Date d = c.getTime();
+						c.set(Calendar.MINUTE, Integer.parseInt(hm[1]) - 15);
+						Date d2 = c.getTime();
+						email.setTimeToSend(d);
+						email.setTimeToNotify(d2);
+					} else{
+						gui.changeBackground(gui.getText8(), new Color(255,
+								100, 100));
+						isSendable = false;
+					}
+				}				
 				ch = MmsChannel.getInstance();
 
 			}
 
 			if (gui.getRadioPrinter().isSelected()) {
+				print = new PrintMessage();
+				print.setText(gui.getArea1().getText());
+				PrintAddress printerAddress = new PrintAddress(gui.getText7()
+						.getText());
+				print.addRecipient(printerAddress);
 				ch = PrintChannel.getInstance();
 			}
+			
 			if (!isSendable) {
 				gui.createWarning();
 			} else {
 				gui.removeWarning();
 				if (gui.getCheckRemainder().isSelected()) {
-
+					if (gui.getRadioEmail().isSelected()) {
+						mess.addMessage(email);
+					} else if (gui.getRadioSms().isSelected()) {
+						mess.addMessage(sms);
+					} else if (gui.getRadioMms().isSelected()) {
+						mess.addMessage(mms);
+					}
+					
+					gui.createNotification("Ihre Nachricht wird zur angegebenen Zeit versendet. Sie werden 15 Minuten vorher eine Notifikation erhalten");
+					gui.clearAllTextfields();
 				} else {
-					ch.submit(message);
+					if (gui.getRadioEmail().isSelected()) {
+						ch.submit(email);
+					} else if (gui.getRadioSms().isSelected()) {
+						ch.submit(sms);
+					} else if (gui.getRadioMms().isSelected()) {
+						ch.submit(mms);
+					} else if (gui.getRadioPrinter().isSelected()) {
+						ch.submit(print);
+					}
+					gui.createNotification("Ihre Nachricht wurde versendet!");
+					gui.clearAllTextfields();
 				}
 			}
 		}

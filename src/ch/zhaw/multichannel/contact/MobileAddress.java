@@ -19,5 +19,8 @@ public class MobileAddress implements Address {
 		
 		return p.matcher(mobileAddress).matches();
 	}
+	public String getAddress(){
+		return mobileAddress;
+	}
 
 }
