@@ -33,6 +33,13 @@ import ch.zhaw.multichannel.messenger.PrintChannel;
 import ch.zhaw.multichannel.messenger.SmsChannel;
 import ch.zhaw.multichannel.view.Gui;
 
+/**
+ * The controller class handles all the events from the GUI
+ * 
+ * @author Olivier Favre
+ * @version $LastChangedRevision: 159 $
+ * @version $LastChangedDate: 2013-06-12 14:28:24 +0200 $
+ */
 public class Controller implements Observer {
 	private Gui gui;
 	private Object initSource;
@@ -50,6 +57,9 @@ public class Controller implements Observer {
 		mess = new Messenger();
 	}
 
+	/**
+	 * sets all the Listener for the GUI-Buttons, -Checkboxes and -Radiobuttons.
+	 */
 	public void setListener() {
 		gui.setRadioListener(new RadioListener());
 		gui.setSendListener(new SendListener());
@@ -59,25 +69,48 @@ public class Controller implements Observer {
 		gui.setClearListener(new ClearListener());
 	}
 
+	/**
+	 * As soon as a notification is sent from the messanger, this method get
+	 * called. It creates a notification for the GUI with the notification text
+	 */
 	public void update(Observable o, Object obj) {
 		Message msg = (Message) obj;
 		gui.createNotification(msg.getMsgId().toString() + " will be sent at "
 				+ msg.getTimeToSend().toString() + " to "
 				+ msg.getRecipients().toString());
 	}
-	
-	class ClearListener implements ActionListener{
 
+	/**
+	 * Eventhandler-Class which clears all fields from the GUI
+	 */
+	class ClearListener implements ActionListener {
 
-		public void actionPerformed(ActionEvent arg0) {
+		/**
+		 * clears all the Textfields after click on button "Clear"
+		 * 
+		 * @param e
+		 *            event triggered by clear-button
+		 */
+		public void actionPerformed(ActionEvent e) {
 			gui.clearAllTextfields();
-			
+
 		}
-		
+
 	}
 
+	/**
+	 * Eventhandler-Class which handles the File-Chooser
+	 */
 	class FileChooserListener implements ActionListener {
 
+		/**
+		 * creates the Filechooser dialog after click on the file-button. if the
+		 * event came from the mms-file-chooser, add a picture file filter to
+		 * the FileChooser
+		 * 
+		 * @param e
+		 *            event triggered by file-buttons
+		 */
 		public void actionPerformed(ActionEvent e) {
 			Object source = e.getSource();
 			FileNameExtensionFilter filter = null;
@@ -102,8 +135,21 @@ public class Controller implements Observer {
 
 	}
 
+	/**
+	 * handles the addressbook button-events
+	 */
 	class AdressbookListener implements ActionListener {
 
+		/**
+		 * calls the GUI to create a Dialog with the addressbook GUI
+		 * 
+		 * if an address is selected, and the submit-button is clicked, the
+		 * address will be added to the addressee-field
+		 * 
+		 * @param e
+		 *            event triggered by addressbook-button or by the buttons in
+		 *            the addressbook-dialog
+		 */
 		public void actionPerformed(ActionEvent e) {
 
 			Object source = e.getSource();
@@ -139,8 +185,18 @@ public class Controller implements Observer {
 
 	}
 
+	/**
+	 * handles the event after a radio-button is selected
+	 */
 	class RadioListener implements ActionListener {
 
+		/**
+		 * switches between the different forms depending on the selected
+		 * radio-button
+		 * 
+		 * @param e
+		 *            event triggered by radio-buttons
+		 */
 		public void actionPerformed(ActionEvent e) {
 			JRadioButton rb = (JRadioButton) e.getSource();
 			if (rb.getText() == "Email") {
@@ -156,11 +212,23 @@ public class Controller implements Observer {
 
 	}
 
+	/**
+	 * handles the event after the send-button is clicked
+	 */
 	class SendListener implements ActionListener {
-
+		/**
+		 * validates all the necessary fields, adds a warning to the gui if
+		 * validate fails, populates the message with all the input when the
+		 * validate passes and sends it to the correct channel, clears all the
+		 * fields after
+		 * 
+		 * @param e
+		 *            event triggered by send-button
+		 */
 		public void actionPerformed(ActionEvent e) {
 			isSendable = true;
 			Channel ch = null;
+			// checks the email-addresses for addressee and cc
 			if (gui.getRadioEmail().isSelected()) {
 				email = new EmailMessage();
 				String[] strArray = gui.getText1().getText().split(";|;\\s");
@@ -190,11 +258,12 @@ public class Controller implements Observer {
 						}
 					}
 				}
-
+				// handles the remainder-checkbox-event, adds the send-time to
+				// the message
 				gui.changeBackground(gui.getText8(), new Color(255, 255, 255));
 				if (gui.getCheckRemainder().isSelected()) {
 					Pattern p = Pattern.compile("[0-9]{2}:[0-9]{2}");
-					if (p.matcher(gui.getText8().getText()).matches()){
+					if (p.matcher(gui.getText8().getText()).matches()) {
 						String[] hm = gui.getText8().getText().split(":");
 						Calendar c = gui.getDate().getCalendar();
 						c.set(Calendar.HOUR, Integer.parseInt(hm[0]));
@@ -204,7 +273,7 @@ public class Controller implements Observer {
 						Date d2 = c.getTime();
 						email.setTimeToSend(d);
 						email.setTimeToNotify(d2);
-					} else{
+					} else {
 						gui.changeBackground(gui.getText8(), new Color(255,
 								100, 100));
 						isSendable = false;
@@ -213,10 +282,9 @@ public class Controller implements Observer {
 				email.setText(gui.getArea1().getText());
 				email.setSubject(gui.getText4().getText());
 				email.setAttachement(gui.getFc().getSelectedFile());
-				// message.setSbject();
 				ch = EmailChannel.getInstance();
 			}
-
+			// validates the phonenumber fields, checks for remainder
 			if (gui.getRadioSms().isSelected()) {
 				sms = new SmsMessage();
 
@@ -236,7 +304,7 @@ public class Controller implements Observer {
 				gui.changeBackground(gui.getText8(), new Color(255, 255, 255));
 				if (gui.getCheckRemainder().isSelected()) {
 					Pattern p = Pattern.compile("[0-9]{2}:[0-9]{2}");
-					if (p.matcher(gui.getText8().getText()).matches()){
+					if (p.matcher(gui.getText8().getText()).matches()) {
 						String[] hm = gui.getText8().getText().split(":");
 						Calendar c = gui.getDate().getCalendar();
 						c.set(Calendar.HOUR, Integer.parseInt(hm[0]));
@@ -246,7 +314,7 @@ public class Controller implements Observer {
 						Date d2 = c.getTime();
 						email.setTimeToSend(d);
 						email.setTimeToNotify(d2);
-					} else{
+					} else {
 						gui.changeBackground(gui.getText8(), new Color(255,
 								100, 100));
 						isSendable = false;
@@ -256,6 +324,7 @@ public class Controller implements Observer {
 				ch = SmsChannel.getInstance();
 
 			}
+			//validates the phonenumber field, checks for remainder
 			if (gui.getRadioMms().isSelected()) {
 
 				mms = new MmsMessage(gui.getFc().getSelectedFile());
@@ -275,7 +344,7 @@ public class Controller implements Observer {
 				gui.changeBackground(gui.getText8(), new Color(255, 255, 255));
 				if (gui.getCheckRemainder().isSelected()) {
 					Pattern p = Pattern.compile("[0-9]{2}:[0-9]{2}");
-					if (p.matcher(gui.getText8().getText()).matches()){
+					if (p.matcher(gui.getText8().getText()).matches()) {
 						String[] hm = gui.getText8().getText().split(":");
 						Calendar c = gui.getDate().getCalendar();
 						c.set(Calendar.HOUR, Integer.parseInt(hm[0]));
@@ -285,16 +354,17 @@ public class Controller implements Observer {
 						Date d2 = c.getTime();
 						email.setTimeToSend(d);
 						email.setTimeToNotify(d2);
-					} else{
+					} else {
 						gui.changeBackground(gui.getText8(), new Color(255,
 								100, 100));
 						isSendable = false;
 					}
-				}				
+				}
 				ch = MmsChannel.getInstance();
 
 			}
-
+			//handles a send-event to a printer
+			// due to time reasons, this option is very slim. You have to know either the name of the printer or the ip-address
 			if (gui.getRadioPrinter().isSelected()) {
 				print = new PrintMessage();
 				print.setText(gui.getArea1().getText());
@@ -303,7 +373,8 @@ public class Controller implements Observer {
 				print.addRecipient(printerAddress);
 				ch = PrintChannel.getInstance();
 			}
-			
+			// if the message passed all field-validations it will be sent
+			// otherwise a warning will be created at the top of the screen
 			if (!isSendable) {
 				gui.createWarning();
 			} else {
@@ -316,7 +387,7 @@ public class Controller implements Observer {
 					} else if (gui.getRadioMms().isSelected()) {
 						mess.addMessage(mms);
 					}
-					
+
 					gui.createNotification("Ihre Nachricht wird zur angegebenen Zeit versendet. Sie werden 15 Minuten vorher eine Notifikation erhalten");
 					gui.clearAllTextfields();
 				} else {
@@ -337,8 +408,17 @@ public class Controller implements Observer {
 
 	}
 
+	/**
+	 * handles the event from the remainder-checkbox
+	 */
 	class CheckboxListener implements ItemListener {
 
+		/**
+		 * activates or deactivates the remainder timefields
+		 * 
+		 * @param e
+		 *            event triggered by remainder-checkbox
+		 */
 		public void itemStateChanged(ItemEvent e) {
 
 			if (e.getStateChange() == ItemEvent.SELECTED) {

@@ -7,7 +7,6 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
-import java.util.Date;
 
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultListModel;
@@ -33,11 +32,20 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.toedter.calendar.JDateChooser;
 
+/**
+ * The GUI-class creates all the gui elements. It provides all the needed
+ * options for the controller class
+ * 
+ * @author Olivier Favre
+ * @version $LastChangedRevision: 159 $
+ * @version $LastChangedDate: 2013-06-12 14:28:24 +0200 $
+ */
 public class Gui extends JFrame {
 	private JPanel p2, p3, p4, p5, p6;
 	private JRadioButton radioEmail, radioSms, radioMms, radioPrinter;
 	private JLabel l1, l2, l3, l4, l5, l6, l7, l8, l9, l10, l11, l12, l13, l14;
-	private JTextField text1, text2, text3, text4, text5, text6, text7, text8, text9;
+	private JTextField text1, text2, text3, text4, text5, text6, text7, text8,
+			text9;
 	private JTextArea area1;
 	private JButton b1, b2, b3, b4, b5, b6, b7, b8;
 	private GroupLayout layout;
@@ -48,13 +56,22 @@ public class Gui extends JFrame {
 	private JDialog dialog;
 	private JFileChooser fc;
 	private ImageIcon icon;
-	
+
+	/**
+	 * Constructor for the gui. When called, it created the initial version of
+	 * the gui.
+	 */
 	public Gui() {
 
 		this.createGuiV2();
 	}
 
-	public void createGuiV2() {
+	/**
+	 * creates the initial version of the GUI.It is called V2 since it is the
+	 * second version of the gui. The first version was made with GridBagLayout
+	 * but is now deprecated
+	 */
+	private void createGuiV2() {
 
 		getContentPane().setLayout(new BorderLayout());
 
@@ -75,11 +92,11 @@ public class Gui extends JFrame {
 		l1 = new JLabel("Messagetype:");
 
 		// Create the radio buttons.
-
 		radioEmail = new JRadioButton("Email");
 		radioSms = new JRadioButton("SMS");
 		radioMms = new JRadioButton("MMS");
 		radioPrinter = new JRadioButton("Printer");
+
 		// Group the radio buttons.
 		ButtonGroup group = new ButtonGroup();
 		group.add(radioEmail);
@@ -97,26 +114,29 @@ public class Gui extends JFrame {
 		p6.add(radioSms);
 		p6.add(radioMms);
 		p6.add(radioPrinter);
-		p2.add(p6,BorderLayout.SOUTH);
-		
+		p2.add(p6, BorderLayout.SOUTH);
 
 		getContentPane().add(p2, BorderLayout.NORTH);
 
+		// create the form-fields
 		createAllFields();
 		setEmailForm();
-		
 
 		b8 = new JButton("Auswaehlen");
 		b7 = new JButton("Hinzufuegen");
 
-
 		add(panel);
 		setVisible(true);
 		pack();
-		//setSize(600, 400);
+		// setSize(600, 400);
 	}
 
-	public void createAllFields() {
+	/**
+	 * creates all the fields for the different forms. All components are
+	 * created here in a GroupLayout. In the process, the components will be
+	 * activated or deactivated depending on the selected form.
+	 */
+	private void createAllFields() {
 		l2 = new JLabel("Empfaenger");
 		l3 = new JLabel("CC");
 		l4 = new JLabel("Telefonnummer");
@@ -142,13 +162,13 @@ public class Gui extends JFrame {
 		b4 = new JButton("Datei");
 		b5 = new JButton("Senden");
 		b6 = new JButton("Loeschen");
-		
+
 		fc = new JFileChooser();
 
 		p3 = new JPanel();
 		p3.add(b5);
 		p3.add(b6);
-		
+
 		area1 = new JTextArea(10, 10);
 		area1.setLineWrap(true);
 		area1.setWrapStyleWord(true);
@@ -237,6 +257,9 @@ public class Gui extends JFrame {
 
 	}
 
+	/**
+	 * sets the form to email, enables/disables all the necessary fields
+	 */
 	public void setEmailForm() {
 		l2.setVisible(true);
 		text1.setVisible(true);
@@ -269,21 +292,16 @@ public class Gui extends JFrame {
 		checkRemainder.setVisible(true);
 
 		if (checkRemainder.isSelected()) {
-			l10.setVisible(true);
-			text8.setVisible(true);
-
-			l11.setVisible(true);
-			date.setVisible(true);
+			setRemainderFields(true);
 		} else {
-			l10.setVisible(false);
-			text8.setVisible(false);
-
-			l11.setVisible(false);
-			date.setVisible(false);
+			setRemainderFields(false);
 		}
 		p2.setVisible(true);
 	}
 
+	/**
+	 * sets the form to SMS, all the necessary fields will be enabled/disabled
+	 */
 	public void setSmsForm() {
 		l2.setVisible(false);
 		text1.setVisible(false);
@@ -316,21 +334,16 @@ public class Gui extends JFrame {
 		checkRemainder.setVisible(true);
 
 		if (checkRemainder.isSelected()) {
-			l10.setVisible(true);
-			text8.setVisible(true);
-
-			l11.setVisible(true);
-			date.setVisible(true);
+			setRemainderFields(true);
 		} else {
-			l10.setVisible(false);
-			text8.setVisible(false);
-
-			l11.setVisible(false);
-			date.setVisible(false);
+			setRemainderFields(false);
 		}
 		p2.setVisible(true);
 	}
 
+	/**
+	 * sets the form to MMS, all the necessary fields will be enabled/disabled
+	 */
 	public void setMmsForm() {
 		l2.setVisible(false);
 		text1.setVisible(false);
@@ -363,21 +376,17 @@ public class Gui extends JFrame {
 		checkRemainder.setVisible(true);
 
 		if (checkRemainder.isSelected()) {
-			l10.setVisible(true);
-			text8.setVisible(true);
-
-			l11.setVisible(true);
-			date.setVisible(true);
+			setRemainderFields(true);
 		} else {
-			l10.setVisible(false);
-			text8.setVisible(false);
-
-			l11.setVisible(false);
-			date.setVisible(false);
+			setRemainderFields(false);
 		}
 		p2.setVisible(true);
 	}
 
+	/**
+	 * sets the form to printer, all the necessary fields will be
+	 * enabled/disabled
+	 */
 	public void setPrinterForm() {
 		l2.setVisible(false);
 		text1.setVisible(false);
@@ -409,17 +418,15 @@ public class Gui extends JFrame {
 
 		checkRemainder.setVisible(false);
 
-		l10.setVisible(false);
-		text8.setVisible(false);
-
-		l11.setVisible(false);
-		date.setVisible(false);
+		setRemainderFields(false);
 
 		p2.setVisible(true);
 	}
 
+	/**
+	 * enabled/disables the remainder fields
+	 */
 	public void setRemainderFields(boolean b) {
-
 		l10.setVisible(b);
 		text8.setVisible(b);
 
@@ -427,88 +434,124 @@ public class Gui extends JFrame {
 		date.setVisible(b);
 	}
 
+	/**
+	 * creates the dialog for the addressbook
+	 * 
+	 * @param li
+	 *            all the stored contacts
+	 */
 	public void createDialog(ArrayList<String> li) {
 
 		dialog = new JDialog();
 
 		dialog.setTitle("Adressbuch");
-		
+
 		l12 = new JLabel("Neuer Kontakt hinzufuegen:");
 		text9 = new JTextField(20);
-		
+
 		limo = new DefaultListModel<String>();
-		
-		for (String field:li){
+
+		for (String field : li) {
 			limo.addElement(field);
 		}
-		
+
 		adressList = new JList<String>(limo);
 		l13 = new JLabel("Kontakt auswählen");
-		
-        adressList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        adressList.setVisibleRowCount(5);
-        adressList.setPreferredSize(new Dimension(100,100));
-        JScrollPane listScrollPane = new JScrollPane(adressList);
-		
-        dialog.setLayout(new BorderLayout());
-		
-		adressList.setPreferredSize(new Dimension(200,100));
-		
-		
+
+		adressList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		adressList.setVisibleRowCount(5);
+		adressList.setPreferredSize(new Dimension(100, 100));
+		JScrollPane listScrollPane = new JScrollPane(adressList);
+
+		dialog.setLayout(new BorderLayout());
+
+		adressList.setPreferredSize(new Dimension(200, 100));
+
 		p4 = new JPanel();
 		p5 = new JPanel();
 		p4.setLayout(new FlowLayout());
 		p5.setLayout(new FlowLayout());
-		
+
 		p4.add(l12);
 		p4.add(text9);
 		p4.add(b7);
-		
+
 		p5.add(l13);
 		p5.add(listScrollPane);
 		p5.add(b8);
-		
-		dialog.add(p4,BorderLayout.NORTH);
-		dialog.add(p5,BorderLayout.CENTER);
-		
+
+		dialog.add(p4, BorderLayout.NORTH);
+		dialog.add(p5, BorderLayout.CENTER);
+
 		dialog.pack();
 		dialog.setModal(true);
 		dialog.setVisible(true);
-		
+
 	}
-	
-	public void changeBackground(JComponent c, Color color){
-		if (c instanceof JTextField ){
+
+	/**
+	 * changes the background of a component
+	 * 
+	 * @param c
+	 *            the component to be colored
+	 * @param color
+	 *            the color to be painted
+	 */
+	public void changeBackground(JComponent c, Color color) {
+		if (c instanceof JTextField) {
 			c.setBackground(color);
 		}
 	}
-	
-	public void createWarning(){		 
-		l14 = new JLabel("Felder sind entweder leer oder fehlerhaft.", icon, SwingConstants.CENTER);
+
+	/**
+	 * creates a warning on the top of the frame
+	 */
+	public void createWarning() {
+		l14 = new JLabel("Felder sind entweder leer oder fehlerhaft.", icon,
+				SwingConstants.CENTER);
 		l14.setForeground(Color.RED);
 		removeWarning();
 		p2.add(l14, BorderLayout.NORTH);
 		revalidate();
 	}
-	
-	public void removeWarning(){
-		try{
+
+	/**
+	 * removes the warning on top of the screen, if it exists
+	 */
+	public void removeWarning() {
+		try {
 			p2.remove(l14);
-		} catch (Exception e){
+		} catch (Exception e) {
 			System.out.println("Warning nicht vorhanden");
 		}
 	}
-	
-	public void createNotification(String str){
-		//JOptionPane op = new JOptionPane();
+
+	/**
+	 * creates an information-dialog
+	 * 
+	 * @param str
+	 *            text to be displayed in the dialog
+	 */
+	public void createNotification(String str) {
+		// JOptionPane op = new JOptionPane();
 		JOptionPane.showMessageDialog(this, str);
 	}
-	
-	public void createErrorNotification(String str){
-		JOptionPane.showMessageDialog(dialog, str, "Fehler", JOptionPane.ERROR_MESSAGE);
+
+	/**
+	 * creates an error dialog
+	 * 
+	 * @param str
+	 *            text to be displayed in the dialog
+	 */
+	public void createErrorNotification(String str) {
+		JOptionPane.showMessageDialog(dialog, str, "Fehler",
+				JOptionPane.ERROR_MESSAGE);
 	}
-	
-	public void clearAllTextfields(){
+
+	/**
+	 * resets all the textfields
+	 */
+	public void clearAllTextfields() {
 		this.text1.setText("");
 		this.text2.setText("");
 		this.text3.setText("");
@@ -519,18 +562,40 @@ public class Gui extends JFrame {
 		this.text8.setText("");
 		this.area1.setText("");
 	}
-	
-	public int openFileChooser(FileNameExtensionFilter filter){
+
+	/**
+	 * opens the file-chooser-dialog
+	 * 
+	 * @param filter
+	 *            file extension filter for the file chooser
+	 * @return the return state of the file chooser on popdown:
+	 *         JFileChooser.CANCEL_OPTION , JFileChooser.APPROVE_OPTION
+	 *         ,JFileChooser.ERROR_OPTION. If an error occurs or the dialog is
+	 *         dismissed
+	 */
+	public int openFileChooser(FileNameExtensionFilter filter) {
 		if (filter != null) {
 			fc.setFileFilter(filter);
 		}
 		return fc.showOpenDialog(Gui.this);
 	}
 
-	public void setClearListener(ActionListener a){
+	/**
+	 * sets the Listener for the clear-button
+	 * 
+	 * @param a
+	 *            action-listener to be added to the button
+	 */
+	public void setClearListener(ActionListener a) {
 		this.b6.addActionListener(a);
 	}
 	
+	/**
+	 * sets the Listener for the radio-buttons
+	 * 
+	 * @param a
+	 *            action-listener to be added to the radio-buttons
+	 */
 	public void setRadioListener(ActionListener a) {
 		this.radioEmail.addActionListener(a);
 		this.radioSms.addActionListener(a);
@@ -538,54 +603,113 @@ public class Gui extends JFrame {
 		this.radioPrinter.addActionListener(a);
 	}
 
+	/**
+	 * sets the Listener for the send-button
+	 * 
+	 * @param a
+	 *            action-listener to be added to the button
+	 */
 	public void setSendListener(ActionListener a) {
 		this.b5.addActionListener(a);
 	}
 
+	/**
+	 * sets the Listener for the remainder-checkbox
+	 * 
+	 * @param i
+	 *            item-listener to be added to the remainder-checkbox
+	 */
 	public void setCheckboxListener(ItemListener i) {
 		this.checkRemainder.addItemListener(i);
 	}
 
+	/**
+	 * sets the Listener for the addressbook-button
+	 * 
+	 * @param a
+	 *            action-listener to be added to the button
+	 */
 	public void setAdressbookListener(ActionListener a) {
 		this.b1.addActionListener(a);
 		this.b2.addActionListener(a);
 		this.b7.addActionListener(a);
 		this.b8.addActionListener(a);
 	}
-	
-	public void setFileChooserListener(ActionListener a){
+
+	/**
+	 * sets the Listener for the filechooser-button
+	 * 
+	 * @param a
+	 *            action-listener to be added to the button
+	 */
+	public void setFileChooserListener(ActionListener a) {
 		this.b3.addActionListener(a);
 		this.b4.addActionListener(a);
 	}
 
+	
+	/**
+	 * getter for the email-radiobutton
+	 *
+	 * @return the radiobutton for email
+	 */
 	public JRadioButton getRadioEmail() {
 		return radioEmail;
 	}
 
+	/**
+	 * getter for the sms-radiobutton
+	 *
+	 * @return the radiobutton for sms
+	 */
 	public JRadioButton getRadioSms() {
 		return radioSms;
 	}
 
+	/**
+	 * getter for the mms-radiobutton
+	 *
+	 * @return the radiobutton for mms
+	 */
 	public JRadioButton getRadioMms() {
 		return radioMms;
 	}
 
+	/**
+	 * getter for the printer-radiobutton
+	 *
+	 * @return the radiobutton for print
+	 */
 	public JRadioButton getRadioPrinter() {
 		return radioPrinter;
 	}
 
+	/**
+	 * getter for the choose button in the addressbook
+	 *
+	 * @return the choose-button in the addressbook
+	 */
 	public JButton getB7() {
 		return b7;
 	}
 
+	/**
+	 * getter for the add button in the addressbook
+	 *
+	 * @return the add-button in the addressbook
+	 */
 	public JButton getB8() {
 		return b8;
 	}
-
+	/**
+	 * getter for the list-model in the addressbook
+	 *
+	 * @return the list-model in the addressbook
+	 */
 	public DefaultListModel<String> getLimo() {
 		return limo;
 	}
-
+	 
 	public JTextField getText9() {
 		return text9;
 	}
@@ -661,5 +785,5 @@ public class Gui extends JFrame {
 	public JDateChooser getDate() {
 		return date;
 	}
-	
+
 }
